@@ -25,6 +25,9 @@ import java.text.MessageFormat;
 
 import javax.swing.SwingUtilities;
 
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.extras.FlatInspector;
+import com.formdev.flatlaf.extras.FlatUIDefaultsInspector;
 import org.swingexplorer.internal.*;
 
 /**
@@ -32,6 +35,8 @@ import org.swingexplorer.internal.*;
  * @author Maxim Zakharenkov
  */
 public class Launcher {
+    static final String PREFS_ROOT_PATH = "/flatlaf-demo";
+    static final String KEY_TAB = "tab";
 
     /**
      * Launch the Swing Explorer GUI.
@@ -48,8 +53,22 @@ public class Launcher {
      */
 	public static void launch() {
         try {
-            final Application app = new Application();
-            SwingUtilities.invokeAndWait(app);
+//            final Application app = new Application();
+//            SwingUtilities.invokeAndWait(app);
+            SwingUtilities.invokeAndWait(() -> {
+                DemoPrefs.init( PREFS_ROOT_PATH);
+
+                FlatLaf.registerCustomDefaultsSource("com.formdev.flatlaf.demo");
+
+                DemoPrefs.setupLaf(new String[0]);
+
+                // install inspectors
+                FlatInspector.install( "ctrl shift alt X" );
+                FlatUIDefaultsInspector.install( "ctrl shift alt Y" );
+                Application app = new Application();
+                app.run();
+
+            });
         } catch (Exception e) {
             System.err.println("An error occurred while starting Swing Explorer: " + e.getMessage());
             e.printStackTrace();

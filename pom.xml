@@ -6,11 +6,11 @@
     <groupId>org.swingexplorer</groupId>
     <artifactId>swingexplorer</artifactId>
     <packaging>pom</packaging>
-    <version>1.8.0-SNAPSHOT</version>
+    <version>1.9.0-SNAPSHOT</version>
 
     <name>Swing Explorer</name>
     <description>Tool for inspecting Swing GUI internals</description>
-    <url>https://github.com/swingexplorer/swingexplorer</url>
+    <url>https://github.com/touchmii/swingexplorer</url>
 
     <licenses>
         <license>
@@ -32,16 +32,25 @@
             <organization>Independent Consultant</organization>
             <organizationUrl>https://apjanke.net</organizationUrl>
         </developer>
+        <developer>
+            <name>Benoni jiang</name>
+            <email>ipeooc@gmail.com</email>
+            <organization>None</organization>
+            <organizationUrl>https://github.com/touchmii</organizationUrl>
+        </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/swingexplorer/swingexplorer.git</connection>
-        <developerConnection>scm:git:https://github.com/swingexplorer/swingexplorer.git</developerConnection>
-        <url>https://github.com/swingexplorer/swingexplorer</url>
+        <connection>scm:git:https://github.com/touchmii/swingexplorer.git</connection>
+        <developerConnection>scm:git:https://github.com/touchmii/swingexplorer.git</developerConnection>
+        <url>https://github.com/touchmii/swingexplorer</url>
     </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <properties>
+        <github.global.server>github</github.global.server>
     </properties>
 
     <modules>
@@ -87,33 +96,66 @@
                     </execution>
                 </executions>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-gpg-plugin</artifactId>-->
+<!--                <version>1.5</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>sign-artifacts</id>-->
+<!--                        <phase>verify</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>sign</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <keyname>Swing Explorer Admin</keyname>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.sonatype.plugins</groupId>-->
+<!--                <artifactId>nexus-staging-maven-plugin</artifactId>-->
+<!--                <version>1.6.7</version>-->
+<!--                <extensions>true</extensions>-->
+<!--                <configuration>-->
+<!--                    <serverId>ossrh</serverId>-->
+<!--		    <nexusUrl>https://oss.sonatype.org</nexusUrl>-->
+<!--                    <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                        <configuration>
-                            <keyname>Swing Explorer Admin</keyname>
-                        </configuration>
-                    </execution>
-                </executions>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.1</version>
+                <configuration>
+                    <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
+                </configuration>
             </plugin>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
-                <extensions>true</extensions>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.12</version>
                 <configuration>
-                    <serverId>ossrh</serverId>
-		    <nexusUrl>https://oss.sonatype.org</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    <message>Maven artifacts for ${project.version}</message>
+                    <noJekyll>true</noJekyll>
+                    <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+                    <branch>refs/heads/master</branch>
+                    <includes>
+                        <include>**/*</include>
+                    </includes>
+                    <repositoryName>maven-repo</repositoryName>
+                    <!-- 对应github上创建的仓库名称 name -->
+                    <repositoryOwner>touchmii</repositoryOwner>
+                    <!-- github 仓库所有者 -->
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

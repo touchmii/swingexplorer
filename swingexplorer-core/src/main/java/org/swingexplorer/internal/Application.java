@@ -1,5 +1,10 @@
 package org.swingexplorer.internal;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.extras.FlatInspector;
+import com.formdev.flatlaf.extras.FlatUIDefaultsInspector;
+
 import org.swingexplorer.edt_monitor.EDTDebugQueue;
 import org.swingexplorer.graphics.Player;
 import org.swingexplorer.idesupport.IDESupport;
@@ -17,6 +22,7 @@ import java.awt.event.WindowEvent;
  */
 public class Application implements Runnable {
 
+
     public IDESupport ideSupport;
 
     FrmSwingExplorer frmMain;
@@ -27,9 +33,37 @@ public class Application implements Runnable {
 
     private PersonalizerRegistry personalizerRegistry;
 
+    static final String PREFS_ROOT_PATH = "/flatlaf-demo";
+	static final String KEY_TAB = "tab";
+
+	private JTabbedPane jTabbedPane = new JTabbedPane();
+
     @Override
     public void run() {
         // register JMX bean for IDE support
+        try {
+//      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel( new FlatDarkLaf());
+        }
+//    catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+//               | UnsupportedLookAndFeelException ex) {
+        catch( Exception ex ) {
+            System.out.println("Could not set look-and-feel");
+//            LOG.warn("Could not set look-and-feel", ex);
+        }
+//        DemoPrefs.init( PREFS_ROOT_PATH );
+//
+//        // application specific UI defaults
+//        FlatLaf.registerCustomDefaultsSource( "com.formdev.flatlaf.demo" );
+//
+//        // set look and feel
+//        String[] arg = new String[1];
+//        DemoPrefs.setupLaf(arg);
+
+        // install inspectors
+//        FlatInspector.install( "ctrl shift alt X" );
+//        FlatUIDefaultsInspector.install( "ctrl shift alt Y" );
+
         ideSupport = IDESupport.registerMBean();
         EDTDebugQueue.initMonitoring();
 
@@ -43,7 +77,7 @@ public class Application implements Runnable {
         });
 
         // we use own L&F for swing explorer to avoid conflict with application's L&F
-        PlafUtils.applyCustomLookAndFeel(frmMain.getContentPane());
+//        PlafUtils.applyCustomLookAndFeel(frmMain.getContentPane());
 
         // load options and set to interested parties
         Options options =  new Options();
@@ -66,6 +100,8 @@ public class Application implements Runnable {
 
         // open frame
         frmMain.setVisible(true);
+
+        //ControlBar.initialize(frmMain, jTabbedPane);
     }
 
     public void showMessageDialog(String message) {
